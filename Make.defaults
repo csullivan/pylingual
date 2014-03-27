@@ -1,0 +1,22 @@
+CC      = gcc
+CPP     = g++
+AS      = as
+LD      = g++
+AR      = ar
+RANLIB  = ranlib
+OBJCOPY = objcopy
+
+# set up Boost paths/libs  (expects BOOST_ROOT to be set in the environment)
+BOOST_PYTHON_LIB = ${BOOST_ROOT}/lib
+BOOST_PYTHON_INC = ${BOOST_ROOT}/include
+BOOST_LDFLAGS    = -L$(BOOST_PYTHON_LIB) -lboost_python
+
+# set up python paths
+PY_CFLAGS  = `python-config --cflags`
+PY_LDFLAGS = `python-config --ldflags`
+
+# set up include path flags
+INCDIRS  = .
+INCDIRS += $(BOOST_PYTHON_INC)
+INCDIR   = $(foreach dir, $(INCDIRS), -I$(dir))
+
