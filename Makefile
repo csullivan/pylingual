@@ -1,15 +1,24 @@
-include ../Make.defaults
-include ../Make.rules
+include ./Make.defaults
+include ./Make.rules
 
-SOURCES = main.o
 
-all: main
+SOURCES=main.cpp pylab.cpp #\
+#	 pylab.cpp
 
-main: $(HWOBJS)
-	$(LD) -o $@ $^ $(PY_LDFLAGS) $(LDFLAGS) $(BOOST_LDFLAGS)
+OBJECTS=$(SOURCES:.cpp=.o )
+
+
+all:	$(OBJECTS)
+	$(LD) $(PY_LDFLAGS) $(LDFLAGS) $(BOOST_LDFLAGS) -o main $^
+	@echo "VICTORY"
+
+
+test:
+	@echo $(INCDIR) $(PY_CFLAGS) $(CFLAGS) $(CPPFLAGS)
 
 clean:
-	rm -rf $(HWOBJS) main
+	rm -rf $(OBJECTS)
+	rm -rf main 
 
 
 
