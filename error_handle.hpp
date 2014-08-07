@@ -1,7 +1,6 @@
 // Parses the value of the active python exception
 // NOTE SHOULD NOT BE CALLED IF NO EXCEPTION
 string parse_python_exception(){
-  cout << "hello" << endl;
     PyObject *type_ptr = NULL, *value_ptr = NULL, *traceback_ptr = NULL;
     // Fetch the exception info from the Python C API
     PyErr_Fetch(&type_ptr, &value_ptr, &traceback_ptr);

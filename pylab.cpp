@@ -1,44 +1,63 @@
 #include <pylab.hpp>
-#include <pylab_converters.hpp>
-#include <error_handle.hpp>
-
-
+//#include <error_handle.hpp>
 
 pylab::pylab(){
-  PyImport_AppendInittab( "std", &initstd);  // Necessary for vector/list conversions
+  PyImport_AppendInittab("std", &initstd);
   Py_Initialize();
-  module = import("std"); // See PyImport_AppendInittab
+  module = import("std"); // See PyImport_AppendInittab // BOOST_PYTHON_MODULE
+  modules["std"]=module;
   main_module = import("__main__");
+  modules["__main__"]=main_module;
   main_namespace = main_module.attr("__dict__");
   built_in = import("__builtin__");
-  pylab_module = import("pylab");
-  pylab_plot = pylab_module.attr("plot");
-  pylab_save = pylab_module.attr("savefig");
+  modules["__builtin__"]=built_in;
+  python_import("pylab","plot");
+  python_import("pylab","savefig");  
+  //  pylab_module = import("pylab");
+  //  pylab_plot = pylab_module.attr("plot");
+  //  pylab_save = pylab_module.attr("savefig");
+  //  modules["pylab"]=pylab_module;
 }
 pylab::~pylab(){
 }
-//template<typename T>
-void pylab::plot(vector<double> x, vector<double> y){
-  Vector_to_python_list<double> converter;
-  PyObject* xList = converter.convert(x);
-  PyObject* yList = converter.convert(y);
-  py::object xObj(handle<>(boost::python::borrowed(xList)));
-  py::object yObj(handle<>(boost::python::borrowed(yList)));
-  pylab_plot(xObj,yObj);
 
-}
 void pylab::savefig(string filename){
-  Vector_to_python_list<string> converter;
   vector<string> file_name;
   file_name.push_back(filename);
-  PyObject* pyString = converter.convert(file_name);
-  py::object listObj(handle<>(boost::python::borrowed(pyString)));
-  pylab_save(py::object(listObj[0]));
+  PyObject* pyString = StringConverter.convert(file_name);
+  pyList listObj(handle<>(boost::python::borrowed(pyString)));
+  //pylab_save(py::object(listObj[0]));
+  this->functions["savefig"](py::object(listObj[0]));
+}
+
+void pylab::python_import(const char* module, const char* function){
+  if (modules.count(module)>0){
+    pyModule imported_function = modules[module].attr(function);
+    functions[function] = imported_function;
+  }else {
+    pyModule python_module = import(module);
+    pyFunc imported_function = python_module.attr(function);
+    modules[module] = python_module;
+    functions[function] = imported_function;
+  }
+}
+
+void pylab::__py(const char* code_to_execute) {
+  exec(code_to_execute,main_namespace);  
 }
 
 
+// py::object pylab::list(vector<double> _vec){
+//   PyObject* List = DoubleConverter.convert(_vec);
+//   pyList ListObj(handle<>(boost::python::borrowed(List)));
+//   return ListObj;
+// }
 
-
+// vector<double> pylab::vec(pyList _list){
+//   vector<double> Vec;
+//   Vec = extract<vector<double> >(_list);
+//   return Vec;
+// }
 
    
   // try{
