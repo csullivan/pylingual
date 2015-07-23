@@ -11,59 +11,47 @@ int main(){
   try{
   
 
-    pylab plt;
-    vector<double> x;
-    vector<double> y;
-    x.push_back(1);
-    x.push_back(2);
-    x.push_back(3);
-    y.push_back(1);
-    y.push_back(4);
-    y.push_back(9);
-    //plt.plot(x,y);
-    //plt.savefig("/user/sullivan/public_html/pylab_class.pdf");
+    pylab py;
 
-    plt.python_import("numpy","arange");    
+    //py.python_import("numpy","diff");
+    //py.python_import("__builtin__","list");    
+    //pyList myObj = py.functions["diff"](py.VecToList(x));
+    //py.main_module.attr("myObj") = myObj; py.__py("print myObj"); // bind python obj in cpp to python keyword
 
-
+    py.python_import("pylab","plot");
+    py.python_import("pylab","savefig");
+    py.python_import("__builtin__","list");    
     
-    plt.python_import("numpy","diff");
-    plt.python_import("numpy","arange");
-    plt.python_import("__builtin__","list");    
-    pyList myObj = plt.functions["diff"](plt.VecToList(x));
-
-    plt.main_module.attr("myObj") = myObj; plt.__py("print myObj");
-    plt.__py("import numpy as np");
-    plt.__py("for el in range(0,10):\n"
-	     "    print el;"
-	     "    print el;");
-
-
-    return 0;
     vector<float> rand;
-    plt.__py("x = [float(x) for x in np.random.rand(10)]","x",rand);    
+    py.__py("import numpy as np; import pylab");
+    // create an arbitrary list in python and extract it out into c++ land
+    py.__py("x = [float(x) for x in np.random.rand(10)]","x",rand);
     for(int i=0;i<rand.size();i++){
       cout << rand[i] << endl;
     }
+    // send it back to python as a new list
+    py.functions["plot"](py.VecToList(rand),py.VecToList(rand));
+    py.__py("pylab.xlim(0.1,0.5)");
+    // call savefig via c++ function
+    py.functions["savefig"]("./test.pdf");
+    // or via python
+    py.__py("pylab.savefig('./test.pdf')");
 
-    //plt.__py("");
     return 0;
 
-    //pyList mylist = plt.functions["list"](nparray);
-    //pyList myObj = plt.functions["arange"](0,10,1);
-    myObj = list(myObj);    
-    float ghst;
-    vector<float> myvec = plt.ListToVec(myObj,ghst);
-    for(int i=0;i<myvec.size();i++){
-      cout << myvec[i] << endl;
-    }
+    // myObj = list(myObj);    
+    // float ghst;
+    // vector<float> myvec = py.ListToVec(myObj,ghst);
+    // for(int i=0;i<myvec.size();i++){
+    //   cout << myvec[i] << endl;
+    // }
 
 
 
 
 
-    //pyList mylist = plt.functions["arange"](0,10,1);    
-    //pyList mylist = plt.functions["diff"](plt.VecToList(x));
+    //pyList mylist = py.functions["arange"](0,10,1);    
+    //pyList mylist = py.functions["diff"](py.VecToList(x));
 
 
   }catch(boost::python::error_already_set const &){
