@@ -11,9 +11,11 @@
 #include <Python.h>
 #include <converters.hpp>
 #include <error_handle.hpp>
+#include <pylingual_exception.hpp>
 
 using namespace std;
 
+//class pylingual_exception;
 class pylingual {
 
 public:
@@ -29,6 +31,8 @@ public:
   void function(const char* pyname, Args&&... args) {
     if (functions.count(pyname)>0) {
       functions[pyname](std::forward<Args>(args)...);
+    } else {
+      throw pylingual_unregistered();
     }
   }
 
@@ -94,6 +98,9 @@ pylingual::pylingual() {
   built_in = boost::python::import("__builtin__");
   modules["__builtin__"]=built_in;
 }
+
+
+
 
 #endif
 
