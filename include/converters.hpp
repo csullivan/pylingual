@@ -8,7 +8,7 @@ namespace {
   template<typename T>
   struct Vector_to_python_list
   {
-   
+
     static PyObject* convert(std::vector<T> const& v)
     {
       using namespace std;
@@ -22,7 +22,7 @@ namespace {
       return incref(l.ptr());
     }
   };
- 
+
   template<typename T>
   struct Vector_from_python_list
   {
@@ -35,7 +35,7 @@ namespace {
 			  &Vector_from_python_list<T>::construct,
 			  type_id<std::vector<T> >());
     }
- 
+
     // Determine if obj_ptr can be converted in a std::vector<T>
     static void* convertible(PyObject* obj_ptr)
     {
@@ -44,7 +44,7 @@ namespace {
       }
       return obj_ptr;
     }
- 
+
     // Convert obj_ptr into a std::vector<T>
     static void construct(
 			  PyObject* obj_ptr,
@@ -57,16 +57,15 @@ namespace {
 
       // // Verify that obj_ptr is a string (should be ensured by convertible())
       // assert(value);
- 
+
       // Grab pointer to memory into which to construct the new std::vector<T>
-      void* storage = (
-		       (boost::python::converter::rvalue_from_python_storage<std::vector<T> >*)
-		       data)->storage.bytes;
- 
+      void* storage =
+        ((boost::python::converter::rvalue_from_python_storage<std::vector<T> >*) data)->storage.bytes;
+
       // in-place construct the new std::vector<T> using the character data
       // extraced from the python object
       std::vector<T>& v = *(new (storage) std::vector<T>());
- 
+
       // populate the vector from list contents !!!
       int le = len(l);
       v.resize(le);
@@ -78,7 +77,7 @@ namespace {
       data->convertible = storage;
     }
   };
- 
+
   void initializeConverters()
   {
   }
@@ -99,10 +98,10 @@ namespace {
 
     // register the to-python converter
     //to_python_converter<std::vector<double>,Vector_to_python_list<double> >();
- 
+
     // register the from-python converter
     //Vector_from_python_list<double>();
-    
+
     def("display",print);
   }
 
