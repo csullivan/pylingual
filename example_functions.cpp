@@ -24,7 +24,6 @@ int main(){
     // call xlim directly in python
     py.call("pylab.xlim(0.1,0.5)");
     // call savefig via c++ function
-    //py.functions["savefig"]("./from_cpp.pdf");
     py.function("savefig","./from_cpp.pdf");
     // or via python
     py.call("pylab.savefig('./from_py.pdf')");
