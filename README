@@ -1,3 +1,0 @@
-A low key class structure for using pylab's 
-( matplotlib + numpy ) plotting routines from 
-within C++ using boost::python. 
