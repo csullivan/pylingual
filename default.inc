@@ -14,12 +14,10 @@ RM       = rm -f
 BOOST_PYTHON_LIB = ${BOOST_ROOT}/lib
 BOOST_PYTHON_INC = ${BOOST_ROOT}/include
 BOOST_LDFLAGS    = -L$(BOOST_PYTHON_LIB) -lboost_python
+
 # set up python paths
 PY_CFLAGS  = `python-config --cflags`
 PY_LDFLAGS = `python-config --ldflags`
-
-
-
 
 # Flags to be passed to both C and C++ code
 CPPFLAGS = -Wall -Wextra -pedantic -g $(PY_CFLAGS)
@@ -28,10 +26,10 @@ CPPFLAGS = -Wall -Wextra -pedantic -g $(PY_CFLAGS)
 CFLAGS   = -O3
 
 # Flags to be passed to C++ code
-CXXFLAGS = -O3 $(ROOTCFLAGS) 
+CXXFLAGS = -O3 
 
 # Flags to be passed to the linker, prior to listing of object files.
-LDFLAGS  = $(ROOTLIBS) $(PY_LDFLAGS) $(BOOST_LDFLAGS)
+LDFLAGS  = $(PY_LDFLAGS) $(BOOST_LDFLAGS)
 
 # Flags to be passed to the linker, after the listing of object files.
 LDLIBS   = 

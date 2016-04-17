@@ -1,7 +1,7 @@
 define WELCOME_MESSAGE
 default.inc not found, generating now
 
-              boost-pylab
+              pylingual
 		    - Chris Sullivan
 
 A simple library for importing python libraries
