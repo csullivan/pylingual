@@ -10,12 +10,13 @@
 #include <boost/python.hpp>
 #include <Python.h>
 #include <converters.hpp>
+#include <error_handle.hpp>
 
 using namespace std;
 
-class pylab {
+class pylingual {
 public:
-  pylab() {
+  pylingual() {
     PyImport_AppendInittab("std", &initstd);
     Py_Initialize();
     // See PyImport_AppendInittab // BOOST_PYTHON_MODULE
@@ -27,7 +28,7 @@ public:
     built_in = boost::python::import("__builtin__");
     modules["__builtin__"]=built_in;
   }
-  ~pylab() { ; }
+  ~pylingual() { ; }
 
   template<typename T>
   boost::python::object VecToList(vector<T> _vec){

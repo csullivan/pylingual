@@ -1,14 +1,13 @@
 #include <vector>
 #include <iostream>
 #include <string>
-#include <pylab.hpp>
-#include <error_handle.hpp>
+#include <pylingual.hpp>
 
 int main(){
 
   try{
 
-    pylab py;
+    pylingual py;
 
     py.import("pylab","plot");
     py.import("pylab","savefig");
