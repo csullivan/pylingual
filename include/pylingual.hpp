@@ -1,5 +1,5 @@
-#ifndef __PYLAB_HPP
-#define __PYLAB_HPP
+#ifndef __PYLINGUAL_HPP__
+#define __PYLINGUAL_HPP__
 #include<vector>
 #include<iostream>
 #include<algorithm>
@@ -15,20 +15,22 @@
 using namespace std;
 
 class pylingual {
+
 public:
-  pylingual() {
-    PyImport_AppendInittab("std", &initstd);
-    Py_Initialize();
-    // See PyImport_AppendInittab // BOOST_PYTHON_MODULE
-    module = boost::python::import("std");
-    modules["std"]=module;
-    main_module = boost::python::import("__main__");
-    modules["__main__"]=main_module;
-    main_namespace = main_module.attr("__dict__");
-    built_in = boost::python::import("__builtin__");
-    modules["__builtin__"]=built_in;
-  }
+  pylingual();
   ~pylingual() { ; }
+
+  template<typename T>
+  void Register(const char* varname, T&& var) {
+    main_module.attr(varname) = var;
+  }
+
+  template<typename... Args>
+  void function(const char* pyname, Args&&... args) {
+    if (functions.count(pyname)>0) {
+      functions[pyname](std::forward<Args>(args)...);
+    }
+  }
 
   template<typename T>
   boost::python::object VecToList(vector<T> _vec){
@@ -36,11 +38,6 @@ public:
     auto List = Converter.convert(_vec);
     boost::python::object ListObj(handle<>(boost::python::borrowed(List)));
     return ListObj;
-  }
-
-  template<typename T>
-  void Register(const char* varname, T&& var) {
-    main_module.attr(varname) = var;
   }
 
   template<typename T>
@@ -52,15 +49,15 @@ public:
     return Vec;
   }
 
-  void call(const char* code_to_execute) {
-    exec(code_to_execute,main_namespace);
-  }
-
   template<typename T>
   void call(const char* code_to_execute,char* var_to_extract,vector<T> &output) {
     exec(code_to_execute,main_namespace);
     auto buffer = main_module.attr(var_to_extract);
     output = ListToVec<T>(buffer);
+  }
+
+  void call(const char* code_to_execute) {
+    exec(code_to_execute,main_namespace);
   }
 
   void import(const char* module, const char* function) {
@@ -75,13 +72,6 @@ public:
     }
   }
 
-  template<typename... Args>
-  void function(const char* pyname, Args&&... args) {
-    if (functions.count(pyname)>0) {
-      functions[pyname](std::forward<Args>(args)...);
-    }
-  }
-
 private:
   boost::python::object module;
   boost::python::object main_module;
@@ -89,7 +79,21 @@ private:
   boost::python::object built_in;
   map<const char*,boost::python::object> modules;
   map<const char*,boost::python::object> functions;
+
 };
+
+pylingual::pylingual() {
+  PyImport_AppendInittab("std", &initstd);
+  Py_Initialize();
+  // See PyImport_AppendInittab // BOOST_PYTHON_MODULE
+  module = boost::python::import("std");
+  modules["std"]=module;
+  main_module = boost::python::import("__main__");
+  modules["__main__"]=main_module;
+  main_namespace = main_module.attr("__dict__");
+  built_in = boost::python::import("__builtin__");
+  modules["__builtin__"]=built_in;
+}
 
 #endif
 
