@@ -54,6 +54,11 @@ public:
   }
 
   template<typename T>
+  T get(const char* var_to_extract) {
+    return extract<T>(main_module.attr(var_to_extract));
+  }
+
+  template<typename T>
   void call(const char* code_to_execute,char* var_to_extract,vector<T> &output) {
     exec(code_to_execute,main_namespace);
     auto buffer = main_module.attr(var_to_extract);
